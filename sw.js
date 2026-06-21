@@ -1,5 +1,5 @@
-// Agarwal Textiles ERP — service worker (offline-first PWA)
-const CACHE = 'at-erp-v5-1';
+// Ankit Textiles ERP — service worker (offline-first PWA)
+const CACHE = 'ankit-erp-v5-3';
 const ASSETS = [
   './',
   './index.html',
