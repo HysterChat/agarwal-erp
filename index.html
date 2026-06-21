@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0" />
-<title>Agarwal Textiles · ERP</title>
+<title>Ankit Textiles · ERP</title>
 
 <!-- PWA -->
 <link rel="manifest" href="manifest.webmanifest" />
@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="apple-mobile-web-app-title" content="AT ERP" />
+<meta name="apple-mobile-web-app-title" content="Ankit ERP" />
 <link rel="apple-touch-icon" href="icon-192.png" />
 
 <style>
@@ -312,7 +312,7 @@ const ic = (n, c) => `<svg viewBox="0 0 24 24" width="18" height="18" style="fle
 
 /* ============================== DATA ============================== */
 const money = n => '₹' + n.toLocaleString('en-IN');
-const BRAND = 'Agarwal Textiles';
+const BRAND = 'Ankit Textiles';
 const T = {ink:'#241F19',zari:'#BC5F39',maroon:'#8E4230',emerald:'#5C7A4E',vermillion:'#B5403A',amber:'#C18A2E',slate:'#3E4A66',muted:'#6E665B'};
 
 const BRANCHES = [
@@ -322,7 +322,7 @@ const BRANCHES = [
   {id:'B4',name:'PCMC Store',area:'Chokane Chowk, PCMC',type:'Retail Store',lat:18.629,lng:73.799},
 ];
 const ROLES = {
-  CEO:{label:'CEO',icon:'crown',color:T.zari,who:'Rajesh Agarwal'},
+  CEO:{label:'CEO',icon:'crown',color:T.zari,who:'Rajesh Ankit'},
   HR:{label:'HR',icon:'users',color:T.slate,who:'Sneha Kulkarni'},
   ACCOUNTS:{label:'Accounts',icon:'wallet',color:T.emerald,who:'Amit Joshi'},
   MANAGER:{label:'Branch Manager',icon:'store',color:T.amber,who:'Suresh More · B1'},
@@ -352,7 +352,7 @@ const ALERTS=[
   {sev:'amber',i:'nav',t:'Field staff long stop',d:'Vijay Kale stationary 22 min on Vendor Pickup.',ago:'4h'},
   {sev:'red',i:'alert',t:'B2B 60+ overdue',d:'Sai Traders ₹1,32,000 (101d), Venkatesh ₹2,10,000 (80d).',ago:'8h'},
 ];
-const USERS=[['Rajesh Agarwal','CEO','All','active'],['Sneha Kulkarni','HR','HO','active'],['Amit Joshi','Accounts','HO','active'],['Suresh More','Manager','B1','active'],['Kavita Pawar','Checkpost','B1','locked'],['Raju Patil','Field','B1','active'],['Deepak Shah','Manager','B4','disabled']];
+const USERS=[['Rajesh Ankit','CEO','All','active'],['Sneha Kulkarni','HR','HO','active'],['Amit Joshi','Accounts','HO','active'],['Suresh More','Manager','B1','active'],['Kavita Pawar','Checkpost','B1','locked'],['Raju Patil','Field','B1','active'],['Deepak Shah','Manager','B4','disabled']];
 const VEND=[['Ramesh Fall Wala, Deccan','Fall, Munda',142,96],['Royal Tailors, FC Road','Alteration',88,82],['Style Point, JM Road','Munda, Alteration',64,91],['PCMC Fall Centre','Fall',51,88]];
 const INTEG=[['Retailware Softech (POS)','Daily sales, bills, inventory, GST','Nightly 11 PM','store'],['TallyPrime Cloud','B2B outstanding, P&L, GST','Daily 8 AM','bank'],['Spine NG HRMS','Attendance, leave, payroll','Daily 7 AM','users'],['Hikvision CCTV','Footfall per store','Hourly','eye']];
 
@@ -732,7 +732,7 @@ function render(){
   app.innerHTML=`<div class="shell${S.navOpen?' nav-open':''}">
     <div class="scrim" onclick="toggleNav(false)"></div>
     <div class="side">
-      <div class="side-top"><div class="mono"><span>A</span></div><div><div class="side-name">Agarwal ERP</div><div class="side-tag">v5.0 · Mumbai</div></div></div>
+      <div class="side-top"><div class="mono"><span>Z</span></div><div><div class="side-name">Ankit ERP</div><div class="side-tag">v5.0 · Mumbai</div></div></div>
       <div class="nav"><div class="nav-sec">${R.label} workspace</div>${nav}</div>
       <div class="side-foot"><button class="signout" onclick="stopTrip();S.stage='login';render()">${ic('logout')} Sign out</button></div>
     </div>
@@ -757,7 +757,7 @@ function loginView(){
   return `<div class="hero">
     <div class="grain"></div>
     <nav>
-      <div class="brand">Agarwal Textiles<small>Heritage · Est. 1982</small></div>
+      <div class="brand">Ankit Textiles<small>Heritage · Est. 1982</small></div>
       <div class="navlinks"><span class="on">Dashboard</span><span>Modules</span><span>Security</span><span onclick="S.stage='app';S.role='CEO';S.tab='overview';render()">Sign In</span></div>
     </nav>
     <div class="center">

@@ -1,7 +1,7 @@
 {
-  "name": "Agarwal Textiles ERP",
-  "short_name": "AT ERP",
-  "description": "Enterprise Resource Planning for Agarwal Textiles Group — cash, stock, staff, GPS and alterations across all branches.",
+  "name": "Ankit Textiles ERP",
+  "short_name": "Ankit ERP",
+  "description": "Enterprise Resource Planning for Ankit Textiles Group — cash, stock, staff, GPS and alterations across all branches.",
   "id": "/",
   "start_url": "./index.html",
   "scope": "./",
