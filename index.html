@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0" />
+<title>Agarwal Textiles · ERP</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.webmanifest" />
+<meta name="theme-color" content="#BC5F39" />
+<meta name="color-scheme" content="light" />
+<link rel="icon" type="image/svg+xml" href="icon.svg" />
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+
+<!-- iOS standalone -->
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="AT ERP" />
+<link rel="apple-touch-icon" href="icon-192.png" />
+
+<style>
+  :root{
+    --canvas:#ECE6DA; --paper:#FBF8F1; --paper2:#F4EFE4;
+    --ink:#241F19; --ink2:#322C24; --ink3:#3E372D;
+    --terra:#BC5F39; --terra-soft:#DC8A63; --brick:#8E4230;
+    --olive:#5C7A4E; --navy:#3E4A66; --ochre:#C18A2E; --brickred:#B5403A;
+    --text:#241F19; --muted:#6E665B; --faint:#9C9384; --hairline:#E2DBCC;
+    --zari:var(--terra); --zari-soft:var(--terra-soft); --maroon:var(--brick);
+    --emerald:var(--olive); --vermillion:var(--brickred); --amber:var(--ochre); --slate:var(--navy);
+    --shadow:0 1px 2px rgba(60,45,30,.06), 0 12px 32px rgba(60,45,30,.07);
+    --shadow-sm:0 1px 2px rgba(60,45,30,.08);
+    --sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    --r:13px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{font-family:var(--sans);color:var(--text);background:var(--canvas);
+    -webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+  button{font-family:inherit;cursor:pointer}
+  ::selection{background:var(--terra);color:#fff}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+  :focus-visible{outline:2px solid var(--terra);outline-offset:2px}
+
+  /* ---------- HERO / LOGIN ---------- */
+  .hero{position:fixed;inset:0;display:flex;flex-direction:column;
+    background:
+      radial-gradient(880px 600px at 17% 32%, rgba(110,111,75,.50), transparent 60%),
+      radial-gradient(820px 540px at 83% 26%, rgba(188,95,57,.45), transparent 60%),
+      radial-gradient(960px 720px at 58% 100%, rgba(46,54,80,.55), transparent 60%),
+      linear-gradient(140deg,#2C2924 0%,#3D392F 46%,#29261F 100%)}
+  .hero::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(125% 125% at 50% 40%, transparent 42%, rgba(0,0,0,.6) 100%)}
+  .hero .grain{position:absolute;inset:0;opacity:.08;mix-blend-mode:overlay;pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  .hero nav{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;padding:28px 50px}
+  .hero .brand{font-weight:800;letter-spacing:.16em;font-size:15px;text-transform:uppercase;color:#fff}
+  .hero .brand small{display:block;font-weight:600;letter-spacing:.26em;font-size:8.5px;color:rgba(255,255,255,.52);margin-top:4px}
+  .hero .navlinks{display:flex;gap:34px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.66)}
+  .hero .navlinks span{cursor:pointer;transition:color .15s;position:relative}
+  .hero .navlinks span:hover{color:#fff}
+  .hero .navlinks span.on{color:#fff}
+  .hero .navlinks span.on::after{content:"";position:absolute;left:0;right:0;bottom:-7px;height:2px;background:var(--terra)}
+  .hero .center{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 24px}
+  .hero .eyebrow2{font-size:12px;letter-spacing:.36em;text-transform:uppercase;color:rgba(237,231,219,.82);margin-bottom:28px;display:flex;align-items:center;gap:11px}
+  .hero .eyebrow2 i{width:6px;height:6px;border-radius:50%;background:var(--terra)}
+  .hero h1{font-weight:800;text-transform:uppercase;letter-spacing:-.022em;line-height:.9;margin:0;
+    font-size:clamp(46px,9.2vw,124px);color:#F5F2EB;text-shadow:0 3px 36px rgba(0,0,0,.32)}
+  .hero .subtitle{margin-top:26px;font-size:clamp(13px,1.5vw,17px);color:rgba(237,231,219,.8);max-width:580px;line-height:1.55}
+  .hero .cta{margin-top:42px;background:var(--canvas);color:var(--ink);border:none;border-radius:999px;
+    padding:17px 42px;font-size:13px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+    transition:transform .18s,box-shadow .18s,background .18s}
+  .hero .cta:hover{transform:translateY(-2px);box-shadow:0 18px 44px rgba(0,0,0,.4);background:#fff}
+  .hero .foot{position:relative;z-index:2;display:flex;justify-content:space-between;padding:22px 50px;
+    font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.42)}
+  .hero .foot b{color:rgba(237,231,219,.7);font-weight:600}
+
+  /* ---------- SHELL ---------- */
+  .shell{display:flex;height:100vh}
+  .side{width:236px;flex-shrink:0;display:flex;flex-direction:column;position:relative;color:#fff;
+    background:radial-gradient(600px 300px at 30% 0%, rgba(188,95,57,.10), transparent 60%), linear-gradient(180deg,#2C2823,#221E18)}
+  .side-top{padding:20px 18px 16px;display:flex;gap:12px;align-items:center;border-bottom:1px solid rgba(255,255,255,.08)}
+  .mono{width:38px;height:38px;border-radius:50%;background:var(--brick);display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
+  .mono::after{content:"";position:absolute;inset:3px;border-radius:50%;border:1px solid var(--terra-soft);opacity:.7}
+  .mono span{font-weight:800;color:#EDE7DB;font-size:18px}
+  .side-name{font-weight:800;color:#F1EDE5;font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+  .side-tag{color:rgba(255,255,255,.5);font-size:9px;letter-spacing:.18em;margin-top:4px;text-transform:uppercase}
+  .nav{flex:1;overflow-y:auto;padding:10px}
+  .nav::-webkit-scrollbar{width:6px}.nav::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:9px}
+  .nav-sec{color:rgba(255,255,255,.42);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;padding:14px 12px 7px}
+  .nav-item{display:flex;gap:11px;align-items:center;padding:9px 12px;border-radius:9px;color:rgba(255,255,255,.68);
+    font-size:13px;font-weight:500;margin-bottom:1px;transition:background .12s,color .12s;position:relative}
+  .nav-item:hover{background:rgba(255,255,255,.06);color:#fff}
+  .nav-item.on{background:rgba(188,95,57,.16);color:#fff;font-weight:700}
+  .nav-item.on::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:var(--terra)}
+  .nav-item svg{width:17px;height:17px;flex-shrink:0;opacity:.9}
+  .side-foot{padding:12px;border-top:1px solid rgba(255,255,255,.08)}
+  .signout{width:100%;background:transparent;border:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.7);
+    border-radius:999px;padding:9px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;display:flex;align-items:center;justify-content:center;gap:7px}
+  .signout:hover{border-color:rgba(255,255,255,.3);color:#fff}
+
+  .main{flex:1;display:flex;flex-direction:column;min-width:0}
+  .topbar{height:64px;flex-shrink:0;background:var(--paper);border-bottom:1px solid var(--hairline);
+    display:flex;align-items:center;justify-content:space-between;padding:0 28px}
+  .tb-role{display:flex;gap:11px;align-items:center}
+  .tb-badge{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+  .tb-badge svg{width:18px;height:18px}
+  .tb-rname{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+  .tb-rwho{color:var(--muted);font-size:11px}
+  .switcher{display:flex;gap:11px;align-items:center}
+  .switch-lbl{color:var(--faint);font-size:10px;letter-spacing:.14em;text-transform:uppercase}
+  .live{display:flex;align-items:center;gap:6px;color:var(--olive);font-size:11px;font-weight:700;
+    border:1px solid #CBD3BE;background:#EEF1E6;border-radius:999px;padding:5px 11px}
+  .live i{width:7px;height:7px;border-radius:50%;background:var(--olive);animation:pulse 1.8s infinite}
+  select.role{background:var(--paper2);color:var(--text);border:1px solid var(--hairline);
+    border-radius:999px;padding:9px 15px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer}
+  select.role:focus{outline:none;border-color:var(--terra)}
+  .content{flex:1;overflow-y:auto;padding:26px 30px;background:var(--canvas)}
+  .view{animation:rise .28s ease both;max-width:1180px}
+
+  /* ---------- HEADERS ---------- */
+  .eyebrow{color:var(--terra);font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:700}
+  .h1{font-weight:800;font-size:27px;letter-spacing:-.01em;line-height:1.05;text-transform:uppercase;margin:6px 0 0;color:var(--text)}
+  .sub{color:var(--muted);font-size:13.5px;margin-top:8px}
+  .head{margin-bottom:22px;display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+
+  /* ---------- CARD / GRID ---------- */
+  .card{background:var(--paper);border:1px solid var(--hairline);border-radius:var(--r);box-shadow:var(--shadow);padding:18px}
+  .card-t{font-weight:700;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;margin-bottom:14px;color:var(--text)}
+  .grid{display:grid;gap:14px}
+  .row{display:flex;gap:14px;flex-wrap:wrap}
+  .stat{flex:1;min-width:158px;background:var(--paper);border:1px solid var(--hairline);border-radius:var(--r);box-shadow:var(--shadow-sm);padding:17px}
+  .stat .k{color:var(--muted);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+  .stat .v{font-size:27px;font-weight:800;margin-top:8px;letter-spacing:-.01em}
+  .stat .s{color:var(--faint);font-size:11px;margin-top:4px}
+
+  .pill{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:3px 11px;font-size:10.5px;font-weight:700;letter-spacing:.04em;white-space:nowrap}
+  .btn{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:9px 17px;font-weight:700;font-size:13px;border:1px solid transparent;transition:transform .14s,box-shadow .14s,background .14s}
+  .btn:hover{transform:translateY(-1px)}
+  .btn-gold{background:var(--terra);color:#fff;border-color:var(--terra)}
+  .btn-gold:hover{box-shadow:0 8px 22px rgba(188,95,57,.3)}
+  .btn-ghost{background:transparent}
+  .btn svg{width:15px;height:15px}
+  .btn-sm{padding:6px 13px;font-size:12px}
+
+  /* ---------- TABLE ---------- */
+  table{width:100%;border-collapse:collapse}
+  thead th{text-align:left;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:0 12px 11px;border-bottom:1px solid var(--hairline)}
+  tbody td{font-size:13px;padding:12px;border-bottom:1px solid var(--hairline);color:var(--text)}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr{transition:background .1s}
+  tbody tr:hover{background:var(--paper2)}
+  .num{text-align:right;font-variant-numeric:tabular-nums}
+
+  /* ---------- FIELD ROWS ---------- */
+  .frow{display:flex;justify-content:space-between;gap:14px;padding:10px 0;border-bottom:1px solid var(--hairline)}
+  .frow:last-child{border-bottom:none}
+  .frow .fk{color:var(--muted);font-size:13px}
+  .frow .fv{font-size:13px;font-weight:500;text-align:right}
+
+  /* ---------- STITCHED SEAM ---------- */
+  .seam{position:relative;padding:8px 6px 4px;overflow-x:auto}
+  .seam-track{display:flex;align-items:flex-start;min-width:640px}
+  .seam-node{flex:1;display:flex;flex-direction:column;align-items:center;position:relative}
+  .seam-line{position:absolute;top:15px;height:0;border-top:2px dashed var(--hairline);left:50%;right:-50%;z-index:0}
+  .seam-line.done{border-top-color:var(--terra);border-top-style:solid}
+  .seam-dot{width:32px;height:32px;border-radius:50%;background:var(--paper);border:2px solid var(--hairline);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--faint);z-index:1}
+  .seam-dot.done{border-color:var(--terra);background:#F7E7DD;color:var(--terra)}
+  .seam-dot.active{border-color:var(--brick);background:var(--brick);color:#fff;box-shadow:0 0 0 4px rgba(142,66,48,.16)}
+  .seam-lbl{font-size:10.5px;color:var(--muted);margin-top:8px;text-align:center;max-width:88px;line-height:1.3}
+  .seam-lbl.active{color:var(--brick);font-weight:700}
+
+  /* ---------- MISC ---------- */
+  .bcard{background:var(--paper);border:1px solid var(--hairline);border-radius:var(--r);box-shadow:var(--shadow-sm);padding:16px;transition:transform .15s,box-shadow .15s}
+  .bcard:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+  .bcode{font-weight:800;font-size:22px;color:var(--brick);letter-spacing:.02em}
+  .clickable{cursor:pointer}
+  .alert-card{display:flex;gap:14px;align-items:center;padding:14px 16px;border-radius:12px;background:var(--paper);border:1px solid var(--hairline);box-shadow:var(--shadow-sm);margin-bottom:10px}
+  .alert-ic{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .alert-ic svg{width:20px;height:20px}
+  .invcell{background:var(--paper2);border:1px solid var(--hairline);border-radius:11px;padding:12px}
+  .map-wrap{background:#E7E1D4;border:1px solid var(--hairline);border-radius:12px;overflow:hidden}
+  .toast{position:fixed;inset:0;background:rgba(36,31,25,.55);display:flex;align-items:center;justify-content:center;z-index:60;padding:20px;animation:fade .2s ease both}
+  .wa{width:328px;background:#0B141A;border-radius:18px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+  .wa-top{background:#1F2C33;padding:13px 16px;display:flex;align-items:center;gap:10px;color:#fff;font-weight:700;font-size:14px}
+  .wa-body{padding:18px;background:linear-gradient(#0d1820,#0b141a)}
+  .wa-bubble{background:#075E54;color:#EAFBEA;padding:13px 15px;border-radius:13px 13px 13px 3px;font-size:13px;line-height:1.55}
+  .wa-meta{color:#6B8A78;font-size:11px;margin-top:12px;text-align:center}
+
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+  /* ---------- HAMBURGER + SCRIM (hidden on desktop) ---------- */
+  .hamburger{display:none;width:38px;height:38px;border-radius:9px;border:1px solid var(--hairline);
+    background:var(--paper2);align-items:center;justify-content:center;flex-shrink:0}
+  .hamburger svg{width:20px;height:20px;stroke:var(--ink)}
+  .scrim{display:none;position:fixed;inset:0;background:rgba(36,31,25,.5);z-index:48;animation:fade .2s ease both}
+
+  /* ---------- MOBILE ---------- */
+  @media (max-width:820px){
+    .shell{height:100dvh}
+    /* sidebar becomes an off-canvas drawer */
+    .side{position:fixed;top:0;left:0;bottom:0;width:264px;max-width:84vw;z-index:50;
+      transform:translateX(-100%);transition:transform .26s cubic-bezier(.4,0,.2,1);
+      box-shadow:0 0 40px rgba(0,0,0,.4)}
+    .shell.nav-open .side{transform:translateX(0)}
+    .shell.nav-open .scrim{display:block}
+    .hamburger{display:flex}
+
+    .topbar{height:58px;padding:0 14px;gap:10px;padding-top:env(safe-area-inset-top)}
+    .tb-role{gap:9px;min-width:0}
+    .tb-rname{font-size:11px}
+    .tb-rwho{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:36vw}
+    .switcher{gap:7px}
+    .switch-lbl,.topbar .live{display:none}        /* keep header uncluttered on phones */
+    select.role{padding:8px 12px;font-size:12.5px;max-width:46vw}
+
+    .content{padding:16px 14px calc(20px + env(safe-area-inset-bottom))}
+    .view{max-width:100%}
+    .head{flex-direction:column;gap:10px;margin-bottom:16px}
+    .h1{font-size:21px}
+    .sub{font-size:12.5px}
+
+    /* every multi-column grid collapses to one column */
+    .grid{grid-template-columns:1fr !important}
+    .stat{min-width:0}
+    .row{gap:10px}
+    .stat .v{font-size:23px}
+
+    table{display:block}
+    .tbl-scroll,.card>table{overflow-x:auto;-webkit-overflow-scrolling:touch;display:block;white-space:nowrap}
+    thead th,tbody td{white-space:nowrap}
+
+    .seam{padding-bottom:8px}
+    .map-wrap svg{min-height:200px}
+
+    /* hero / login on phones */
+    .hero nav{padding:18px 20px}
+    .hero .navlinks{gap:18px;font-size:10px}
+    .hero .navlinks span:not(.on):not(:last-child){display:none} /* keep Dashboard + Sign In */
+    .hero .center{padding:0 22px}
+    .hero h1{font-size:clamp(40px,13vw,72px)}
+    .hero .subtitle{font-size:14px}
+    .hero .foot{padding:16px 20px;font-size:9px;gap:10px}
+    .wa{width:min(328px,90vw)}
+
+  }
+  @media (max-width:380px){
+    select.role{max-width:40vw;font-size:12px}
+    .stat .v{font-size:21px}
+  }
+
+  /* Install button — created by JS only when the app is installable */
+  .install-fab{display:flex;position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:55;
+    background:var(--terra);color:#fff;border:none;border-radius:999px;padding:13px 20px;font-weight:700;font-size:13px;
+    box-shadow:0 10px 30px rgba(188,95,57,.45);align-items:center;gap:8px;animation:rise .3s ease both}
+  .install-fab svg{width:17px;height:17px;stroke:#fff}
+
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* ============================== ICONS ============================== */
+const P = {
+  crown:'M3 17h18M5 17l-1.5-9 5 4L12 5l3.5 7 5-4L19 17',
+  wallet:'M3 7h15a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2zM3 7l2.5-3.5A1 1 0 016.3 3H17M17 13h.5',
+  store:'M4 9l1-5h14l1 5M4 9v10a1 1 0 001 1h14a1 1 0 001-1V9M4 9h16M9 20v-6h6v6',
+  scissors:'M6 6a3 3 0 100 6 3 3 0 000-6zM6 18a3 3 0 100-6 3 3 0 000 6zM20 4L8.5 13.5M20 20L8.5 10.5',
+  feet:'M4 16c0-2 1-4 3-4s3 2 3 4-1 3-3 3-3-1-3-3zM14 11c0-3 2-6 4-6s2 3 1 6-2 4-3 4-2-1-2-4z',
+  shield:'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z',
+  users:'M16 19a4 4 0 00-8 0M12 11a3 3 0 100-6 3 3 0 000 6M20 19a3 3 0 00-4-3M18 9a2.5 2.5 0 000-5',
+  pin:'M12 21s7-6 7-11a7 7 0 10-14 0c0 5 7 11 7 11zM12 12a2.5 2.5 0 100-5 2.5 2.5 0 000 5z',
+  bell:'M6 9a6 6 0 1112 0c0 5 2 6 2 6H4s2-1 2-6M10 20a2 2 0 004 0',
+  package:'M21 8l-9-5-9 5 9 5 9-5zM3 8v8l9 5 9-5V8M12 13v8',
+  building:'M4 21V5a2 2 0 012-2h8a2 2 0 012 2v16M16 8h2a2 2 0 012 2v11M8 7h2M8 11h2M8 15h2',
+  bank:'M3 10l9-6 9 6M5 10v8M19 10v8M9 10v8M15 10v8M3 21h18',
+  clock:'M12 21a9 9 0 100-18 9 9 0 000 18zM12 7v5l3 2',
+  alert:'M12 3l9 16H3zM12 10v4M12 17h.01',
+  check:'M12 21a9 9 0 100-18 9 9 0 000 18zM8.5 12.5l2.5 2.5 4.5-5',
+  xc:'M12 21a9 9 0 100-18 9 9 0 000 18zM9 9l6 6M15 9l-6 6',
+  camera:'M4 8h3l1.5-2h7L17 8h3a1 1 0 011 1v9a1 1 0 01-1 1H4a1 1 0 01-1-1V9a1 1 0 011-1zM12 17a3.5 3.5 0 100-7 3.5 3.5 0 000 7z',
+  lock:'M6 11h12v9H6zM8 11V8a4 4 0 018 0v3',
+  refresh:'M20 11a8 8 0 10-2 5.7M20 5v5h-5',
+  power:'M12 4v8M7 7a7 7 0 109.9 0',
+  send:'M21 4L3 11l7 3 3 7z',
+  phone:'M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z',
+  cal:'M5 5h14a1 1 0 011 1v13a1 1 0 01-1 1H5a1 1 0 01-1-1V6a1 1 0 011-1zM4 9h16M9 3v4M15 3v4',
+  chev:'M9 6l6 6-6 6',
+  logout:'M14 4h4a1 1 0 011 1v14a1 1 0 01-1 1h-4M10 8l-4 4 4 4M6 12h10',
+  cloud:'M7 18a4 4 0 010-8 5 5 0 019.5-1A4 4 0 0117 18z',
+  phone2:'M8 3h8a1 1 0 011 1v16a1 1 0 01-1 1H8a1 1 0 01-1-1V4a1 1 0 011-1zM11 18h2',
+  file:'M7 3h7l4 4v13a1 1 0 01-1 1H7a1 1 0 01-1-1V4a1 1 0 011-1zM14 3v4h4M9 13h6M9 16h6',
+  rupee:'M7 5h10M7 9h10M7 5c5 0 6 8 0 8h-1l6 6',
+  nav:'M3 11l18-8-8 18-2-7z',
+  play:'M7 4l12 8-12 8z',
+  square:'M6 6h12v12H6z',
+  trend:'M3 17l6-6 4 4 8-8M21 7v5h-5',
+  eye:'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 15a3 3 0 100-6 3 3 0 000 6z',
+  arrow:'M5 12h14M13 6l6 6-6 6',
+  activity:'M3 12h4l3 8 4-16 3 8h4',
+  truck:'M3 6h11v9H3zM14 9h4l3 3v3h-7M7 18a2 2 0 100-4 2 2 0 000 4M18 18a2 2 0 100-4 2 2 0 000 4',
+  plus:'M12 5v14M5 12h14',
+  menu:'M4 7h16M4 12h16M4 17h16',
+  download:'M12 4v11M7 11l5 5 5-5M5 20h14'
+};
+const ic = (n, c) => `<svg viewBox="0 0 24 24" width="18" height="18" style="flex-shrink:0;vertical-align:middle" fill="none" stroke="${c||'currentColor'}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${(P[n]||'').split('M').filter(Boolean).map(d=>`<path d="M${d}"/>`).join('')}</svg>`;
+
+/* ============================== DATA ============================== */
+const money = n => '₹' + n.toLocaleString('en-IN');
+const BRAND = 'Agarwal Textiles';
+const T = {ink:'#241F19',zari:'#BC5F39',maroon:'#8E4230',emerald:'#5C7A4E',vermillion:'#B5403A',amber:'#C18A2E',slate:'#3E4A66',muted:'#6E665B'};
+
+const BRANCHES = [
+  {id:'B1',name:'Heritage Flagship',area:'Bhandarkar Road, Pune',type:'Flagship Retail',lat:18.514,lng:73.832},
+  {id:'B2',name:'Company Store',area:'Bhandarkar Road, Pune',type:'Company Store',lat:18.516,lng:73.834},
+  {id:'B3',name:'B2B Hub · Pvt Ltd',area:'Kumteka Road, Pune',type:'Office & B2B Hub',lat:18.531,lng:73.844},
+  {id:'B4',name:'PCMC Store',area:'Chokane Chowk, PCMC',type:'Retail Store',lat:18.629,lng:73.799},
+];
+const ROLES = {
+  CEO:{label:'CEO',icon:'crown',color:T.zari,who:'Rajesh Agarwal'},
+  HR:{label:'HR',icon:'users',color:T.slate,who:'Sneha Kulkarni'},
+  ACCOUNTS:{label:'Accounts',icon:'wallet',color:T.emerald,who:'Amit Joshi'},
+  MANAGER:{label:'Branch Manager',icon:'store',color:T.amber,who:'Suresh More · B1'},
+  CHECKPOST:{label:'Checkpost Staff',icon:'scissors',color:T.maroon,who:'Kavita · B1'},
+  FIELD:{label:'Field Staff',icon:'feet',color:'#A86B2E',who:'Raju Patil'},
+};
+const FLOW=['created','out','withVendor','returned','notified','closed'];
+const SM={created:{l:'Job Created',c:T.muted},out:{l:'Item Out',c:T.amber},withVendor:{l:'With Vendor',c:T.slate},returned:{l:'Returned',c:T.zari},notified:{l:'WhatsApp Sent',c:T.emerald},closed:{l:'Closed',c:T.emerald}};
+let JOBS=[
+  {id:'J-1042',branch:'B1',customer:'Mrs. Priya Sharma',phone:'+91 98765 43210',item:'Blue Silk Saree — 6 m',work:'Fall + Munda (Blouse)',vendor:'Ramesh Fall Wala, Deccan',out:'18 Jun',exp:'20 Jun',total:450,adv:100,status:'withVendor'},
+  {id:'J-1043',branch:'B1',customer:'Mr. Anil Deshmukh',phone:'+91 99876 54321',item:'Cream Sherwani',work:'Alteration (Length)',vendor:'Royal Tailors, FC Road',out:'16 Jun',exp:'19 Jun',total:600,adv:200,status:'withVendor',overdue:true},
+  {id:'J-1044',branch:'B1',customer:'Mrs. Sunita Rao',phone:'+91 98111 22334',item:'Green Banarasi Saree',work:'Fall',vendor:'Ramesh Fall Wala, Deccan',out:'19 Jun',exp:'21 Jun',total:300,adv:100,status:'returned'},
+  {id:'J-1045',branch:'B2',customer:'Ms. Neha Patil',phone:'+91 97000 11223',item:'Pink Lehenga',work:'Munda + Alteration',vendor:'Style Point, JM Road',out:'20 Jun',exp:'23 Jun',total:800,adv:300,status:'out'},
+  {id:'J-1046',branch:'B4',customer:'Mrs. Asha Gokhale',phone:'+91 96333 44556',item:'Yellow Cotton Saree',work:'Fall',vendor:'PCMC Fall Centre',out:'20 Jun',exp:'22 Jun',total:250,adv:50,status:'created'},
+  {id:'J-1041',branch:'B1',customer:'Mrs. Latha Iyer',phone:'+91 95444 33221',item:'Red Bridal Saree',work:'Fall + Munda',vendor:'Ramesh Fall Wala, Deccan',out:'15 Jun',exp:'18 Jun',total:500,adv:200,status:'closed'},
+];
+const CASH=[{b:'B1',sales:45000,sub:42500,dep:40000},{b:'B2',sales:31000,sub:31000,dep:31000},{b:'B4',sales:27800,sub:27800,dep:18000}];
+const TRIPS=[{s:'Raju Patil',p:'Bank Deposit',d:'11:05 AM',r:'11:52 AM',km:4.6,st:1,rm:23,f:'—'},{s:'Vijay Kale',p:'Vendor Pickup',d:'10:10 AM',r:'11:40 AM',km:9.2,st:2,rm:46,f:'Long stop 22m'},{s:'Raju Patil',p:'Stock Drop B3',d:'02:15 PM',r:'03:05 PM',km:6.1,st:1,rm:31,f:'—'}];
+const INV=[['Sarees',320,318],['Suits',210,210],['Lehengas',90,86],['Shirts',540,540],['Trousers',410,405],['Kurtas',380,380],['Blouses',260,252],['Dupattas',300,300],['Dress Material',175,175],['Ethnic Wear',140,138],['Western Wear',220,220],['Kids Wear',160,156],['Accessories',500,500],['Fabrics (m)',1200,1188],['Bed Sheets',95,95],['Towels',240,240],['Curtains',70,68],['Innerwear',350,350]];
+const B2B=[{p:'Krishna Garments, Mumbai',i:'Apr 28',a:84000,g:54,b:'30–60'},{p:'Sai Traders, Nashik',i:'Mar 12',a:132000,g:101,b:'60+'},{p:'Lakshmi Drapes, Solapur',i:'Jun 02',a:46000,g:19,b:'0–30'},{p:'Venkatesh Wholesale, Pune',i:'Apr 02',a:210000,g:80,b:'60+'}];
+const ALERTS=[
+  {sev:'red',i:'clock',t:'Late opening — B4',d:'Opened 9:48 AM (scheduled 9:30). GPS verified.',ago:'2h'},
+  {sev:'red',i:'rupee',t:'Cash discrepancy — B1',d:'Sales ₹45,000 vs cash ₹42,500 — gap ₹2,500.',ago:'3h'},
+  {sev:'amber',i:'bank',t:'Partial deposit — B4',d:'Collected ₹27,800, deposited ₹18,000 — ₹9,800 short.',ago:'1h'},
+  {sev:'red',i:'cal',t:'Overdue alteration — B1',d:'Job J-1043 (Anil Deshmukh) past return date 19 Jun.',ago:'5h'},
+  {sev:'red',i:'pin',t:'GPS mismatch — B2',d:'Store open marked 0.8 km away. Needs review.',ago:'6h'},
+  {sev:'amber',i:'nav',t:'Field staff long stop',d:'Vijay Kale stationary 22 min on Vendor Pickup.',ago:'4h'},
+  {sev:'red',i:'alert',t:'B2B 60+ overdue',d:'Sai Traders ₹1,32,000 (101d), Venkatesh ₹2,10,000 (80d).',ago:'8h'},
+];
+const USERS=[['Rajesh Agarwal','CEO','All','active'],['Sneha Kulkarni','HR','HO','active'],['Amit Joshi','Accounts','HO','active'],['Suresh More','Manager','B1','active'],['Kavita Pawar','Checkpost','B1','locked'],['Raju Patil','Field','B1','active'],['Deepak Shah','Manager','B4','disabled']];
+const VEND=[['Ramesh Fall Wala, Deccan','Fall, Munda',142,96],['Royal Tailors, FC Road','Alteration',88,82],['Style Point, JM Road','Munda, Alteration',64,91],['PCMC Fall Centre','Fall',51,88]];
+const INTEG=[['Retailware Softech (POS)','Daily sales, bills, inventory, GST','Nightly 11 PM','store'],['TallyPrime Cloud','B2B outstanding, P&L, GST','Daily 8 AM','bank'],['Spine NG HRMS','Attendance, leave, payroll','Daily 7 AM','users'],['Hikvision CCTV','Footfall per store','Hourly','eye']];
+
+const NAV={
+  CEO:[['overview','Overview','activity'],['alerts','Alerts','bell'],['daily','Daily Report','file'],['cash','Cash','rupee'],['bank','Bank','bank'],['outstanding','Outstanding','trend'],['inventory','Inventory','package'],['timings','Timings','clock'],['field','Field Staff','feet'],['perf','Performance','trend'],['users','Users','users'],['alteration','Alterations','scissors'],['company','Company','building']],
+  HR:[['timings','Timings','clock'],['attendance','Attendance','users'],['field','Field Trips','feet'],['alteration','Alterations','scissors'],['users','Users','users']],
+  ACCOUNTS:[['cash','Cash','rupee'],['bank','Bank','bank'],['outstanding','B2B Outstanding','trend'],['reimb','Reimbursements','truck']],
+  MANAGER:[['store','My Branch','store'],['cash','Cash','rupee'],['bank','Bank','bank'],['daily','Daily Report','file'],['alteration','Alteration Jobs','scissors']],
+  CHECKPOST:[['alteration','Checkpost · IN / OUT','scissors']],
+  FIELD:[['field','Trip Tracker','feet']],
+};
+
+/* ============================== STATE ============================== */
+const S={stage:'login',role:'CEO',tab:'overview',sel:null,wa:null,navOpen:false,
+  trip:{running:false,p:0,secs:0},fleet:[],_fleetInit:false,_timer:null,
+  cashSubmitted:false,bankPhoto:false,bankDone:false,storeOpen:false,users:USERS.map(u=>[...u])};
+
+function go(tab){if(S.tab==='field')stopTrip();S.tab=tab;S.sel=null;S.navOpen=false;render()}
+function setRole(r){S.role=r;S.tab=NAV[r][0][0];S.sel=null;S.navOpen=false;stopTrip();render()}
+function toggleNav(open){S.navOpen=open;render()}
+
+/* ============================== HELPERS ============================== */
+const pill=(t,c)=>`<span class="pill" style="color:${c};background:${c}1a;border:1px solid ${c}44">${t}</span>`;
+const sevCol=s=>s==='red'?T.vermillion:T.amber;
+const scopeOf=()=> (S.role==='MANAGER'||S.role==='CHECKPOST')?'B1':null;
+
+/* ============================== VIEWS ============================== */
+function head(eye,title,sub,badge){return `<div class="head"><div><div class="eyebrow">${eye}</div><div class="h1">${title}</div><div class="sub">${sub}</div></div>${badge||''}</div>`}
+
+function vOverview(){
+  const tc=CASH.reduce((a,b)=>a+b.sub,0), tb=CASH.reduce((a,b)=>a+b.dep,0);
+  const max=Math.max(...CASH.map(c=>c.sales));
+  const bars=BRANCHES.map(b=>{const c=CASH.find(x=>x.b===b.id);const v=c?c.sales:0;
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px">
+      <div style="font-size:11px;color:var(--muted)">${v?money(v):'—'}</div>
+      <div style="width:46px;height:${v?Math.max(8,v/max*150):4}px;border-radius:7px 7px 0 0;background:linear-gradient(${T.zari},${T.maroon})"></div>
+      <div style="font-size:12px;font-weight:700;color:var(--ink)">${b.id}</div></div>`}).join('');
+  const perf=[['B1',92],['B2',88],['B3',79],['B4',71]].map(([b,s])=>{const c=s>85?T.emerald:s>75?T.amber:T.vermillion;
+    return `<div style="margin-bottom:13px"><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:5px"><span style="font-weight:600;color:var(--ink)">${b}</span><span>${s}%</span></div>
+    <div style="height:8px;background:#EFEBDF;border-radius:9px"><div style="width:${s}%;height:100%;border-radius:9px;background:${c}"></div></div></div>`}).join('');
+  return head('CEO Dashboard','Overview — All Branches','Real-time · updates as branches submit through the day')+
+  `<div class="row" style="margin-bottom:14px">
+    ${stat('Cash Submitted',money(tc),T.zari)}${stat('Bank Deposited',money(tb),T.emerald)}
+    ${stat('Open Alerts','7',T.vermillion,'3 red · 2 amber')}${stat('Pending Alterations','14',T.slate,'2 overdue')}
+  </div>
+  <div class="grid" style="grid-template-columns:1.5fr 1fr">
+    <div class="card"><div class="card-t">Today's Sales by Branch</div><div style="display:flex;align-items:flex-end;gap:12px;height:190px;padding-top:10px">${bars}</div></div>
+    <div class="card"><div class="card-t">Branch Performance</div>${perf}</div>
+  </div>`;
+}
+function stat(k,v,c,s){return `<div class="stat"><div class="k">${k}</div><div class="v" style="color:${c}">${v}</div>${s?`<div class="s">${s}</div>`:''}</div>`}
+
+function vAlerts(){
+  const trig=['Late opening','Cash discrepancy &gt;₹5k','GPS mismatch','Bank slip missing','B2B 60+ overdue','Field staff long stop','Stock discrepancy'];
+  return head('CEO Dashboard','Auto-Alert Engine','The CEO is notified automatically — no one has to report a problem')+
+  `<div class="card" style="margin-bottom:16px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+    <span style="color:var(--muted);font-size:12px;margin-right:4px">Watches for</span>${trig.map(t=>pill(t,T.amber)).join('')}</div>`+
+  ALERTS.map(a=>{const c=sevCol(a.sev);return `<div class="alert-card" style="border-color:${c}33">
+    <div class="alert-ic" style="background:${c}18">${ic(a.i,c)}</div>
+    <div style="flex:1"><div style="font-weight:700;font-size:14px">${a.t}</div><div style="color:var(--muted);font-size:12px;margin-top:2px">${a.d}</div></div>
+    ${pill(a.sev.toUpperCase(),c)}<span style="color:var(--faint);font-size:11px">${a.ago} ago</span></div>`}).join('');
+}
+
+function vCash(){
+  const canSub=S.role==='MANAGER';
+  const rows=CASH.map(c=>{const diff=c.sub-c.sales;const dc=diff===0?T.emerald:Math.abs(diff)>5000?T.vermillion:T.amber;
+    return `<tr><td style="font-weight:700">${c.b}</td><td class="num">${money(c.sales)}</td><td class="num">${money(c.sub)}</td><td class="num">${money(c.dep)}</td>
+    <td class="num" style="color:${dc};font-weight:700">${diff===0?'Matched':money(Math.abs(diff))+(Math.abs(diff)>5000?' · RED':' · flag')}</td></tr>`}).join('');
+  let sub=`<div class="card">
+      <div class="card-t">Evening Cash Report — B1</div>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end">
+        <div><div style="color:var(--muted);font-size:12px;margin-bottom:6px">Cash counted</div><input id="ci" value="42,500" style="width:150px;padding:10px 12px;border:1px solid var(--hairline);border-radius:9px;font-family:inherit;font-size:14px"></div>
+        <div style="display:flex;align-items:center;gap:6px;color:var(--emerald);font-size:12px;padding-bottom:11px">${ic('pin',T.emerald)} GPS captured at submit</div>
+        <button class="btn btn-gold" onclick="S.cashSubmitted=true;render()">${ic('send')} Submit Cash</button>
+      </div>`;
+  if(S.cashSubmitted) sub=`<div class="card"><div class="card-t">Evening Cash Report — B1</div>
+      <div style="display:flex;gap:10px;align-items:center;color:${T.vermillion};font-weight:700;font-size:14px">${ic('alert',T.vermillion)} Submitted ₹42,500 vs Retailware ₹45,000 → ₹2,500 gap flagged · CEO alerted · GPS logged</div></div>`;
+  return head('Financial Module','Cash — Auto-Verification','Cash submitted is cross-checked against Retailware POS sales automatically')+
+  `<div class="card" style="margin-bottom:16px"><div class="card-t">Cash Reconciliation · Today</div>
+    <table><thead><tr><th>Branch</th><th class="num">Retailware Sales</th><th class="num">Cash Submitted</th><th class="num">Bank Deposited</th><th class="num">Difference</th></tr></thead><tbody>${rows}</tbody></table>
+    <div style="color:var(--muted);font-size:11px;margin-top:11px">A gap above ₹5,000 fires an automatic RED alert to the CEO. GPS coordinates captured at submission time.</div></div>`+
+  (canSub?sub:'');
+}
+
+function vBank(){
+  const canSub=S.role==='MANAGER';
+  const rows=CASH.map(c=>{const partial=c.dep<c.sub;
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--hairline)">
+      <div style="display:flex;gap:11px;align-items:center"><div style="width:34px;height:34px;border-radius:9px;background:var(--paper2);border:1px solid var(--hairline);display:flex;align-items:center;justify-content:center">${ic('camera',T.zari)}</div>
+      <div><div style="font-size:13px">${c.b} · slip attached</div><div style="color:var(--muted);font-size:11px">Collected ${money(c.sub)} → Deposited ${money(c.dep)}</div></div></div>
+      ${partial?pill('PARTIAL',T.amber):pill('FULL',T.emerald)}</div>`}).join('');
+  let form='';
+  if(canSub){
+    form=`<div class="card"><div class="card-t">Submit Bank Deposit — B1</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
+        <div><div style="color:var(--muted);font-size:12px;margin-bottom:6px">Amount deposited</div><input value="40,000" style="width:140px;padding:10px 12px;border:1px solid var(--hairline);border-radius:9px;font-family:inherit;font-size:14px"></div>
+        <button class="btn ${S.bankPhoto?'btn-gold':'btn-ghost'}" style="${S.bankPhoto?`background:${T.emerald};border-color:${T.emerald};color:#fff`:`border:1px solid var(--zari);color:var(--zari)`}" onclick="S.bankPhoto=true;render()">${ic('camera')} ${S.bankPhoto?'Slip Photo Added':'Attach Slip Photo *'}</button>
+        <button class="btn" style="${S.bankPhoto?`background:${T.zari};color:#221B0E`:'background:#E3DECF;color:#A6A293;cursor:not-allowed'}" onclick="${S.bankPhoto?'S.bankDone=true;render()':''}">${ic('send')} Submit Deposit</button>
+      </div>
+      ${!S.bankPhoto?`<div style="color:${T.vermillion};font-size:12px;margin-top:12px">Submit is blocked until the slip photo is attached.</div>`:''}
+      ${S.bankDone?`<div style="color:${T.emerald};font-size:13px;margin-top:12px;font-weight:700">Deposit recorded with slip — CEO sees collected vs deposited.</div>`:''}</div>`;
+  }
+  return head('Financial Module','Bank Deposit — Slip Mandatory','A deposit cannot be submitted without a photo of the bank slip')+
+  `<div class="card" style="margin-bottom:16px"><div class="card-t">Deposits · Collected vs Deposited</div>${rows}</div>`+form;
+}
+
+function vAlteration(){
+  const scope=scopeOf(), role=S.role;
+  const list=scope?JOBS.filter(j=>j.branch===scope):JOBS;
+  // seam
+  const seam=`<div class="card" style="margin-bottom:16px"><div class="seam"><div class="seam-track">`+
+    FLOW.map((s,i)=>{const active=S.sel&&S.sel.status===s;const done=S.sel&&FLOW.indexOf(S.sel.status)>i;
+      return `<div class="seam-node">${i<FLOW.length-1?`<div class="seam-line ${done?'done':''}"></div>`:''}
+        <div class="seam-dot ${done?'done':''} ${active?'active':''}">${done?'✓':i+1}</div>
+        <div class="seam-lbl ${active?'active':''}">${SM[s].l}</div></div>`}).join('')+
+    `</div></div></div>`;
+  let body;
+  if(role==='CHECKPOST'){
+    body=`<div class="card"><div class="card-t">Checkpost · Log IN / OUT only</div>
+      <div style="color:var(--muted);font-size:12px;margin-top:-8px;margin-bottom:12px">Nothing else is visible to checkpost staff</div>`+
+      list.filter(j=>['created','out','withVendor','returned'].includes(j.status)).map(j=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--hairline)">
+          <div><div style="font-size:14px">${j.id} · ${j.item}</div><div style="color:var(--muted);font-size:12px">${j.vendor}</div></div>
+          <div style="display:flex;gap:8px;align-items:center">${pill(SM[j.status].l,SM[j.status].c)}
+          ${j.status==='created'?`<button class="btn btn-sm" style="background:${T.amber};color:#fff" onclick="advance('${j.id}')">Mark OUT</button>`:''}
+          ${j.status==='withVendor'?`<button class="btn btn-sm btn-gold" onclick="advance('${j.id}')">Mark IN</button>`:''}</div>
+        </div>`).join('')+`</div>`;
+  } else {
+    const left=`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <div class="card-t" style="margin:0">${scope?scope+' Jobs':'All Jobs · 4 Branches'}</div>${scope?'':pill('CEO sees all branches',T.zari)}</div>`+
+      list.map(j=>`<div class="frow clickable" onclick="selJob('${j.id}')">
+        <div><div style="font-size:13px;display:flex;gap:8px;align-items:center">${j.customer} ${j.overdue?pill('OVERDUE',T.vermillion):''}</div>
+        <div style="color:var(--muted);font-size:11px">${j.id} · ${j.branch} · ${j.work} · bal ${money(j.total-j.adv)}</div></div>
+        ${pill(SM[j.status].l,SM[j.status].c)}</div>`).join('')+`</div>`;
+    let right='';
+    if(S.sel){const j=S.sel;const nx=FLOW[FLOW.indexOf(j.status)+1];
+      right=`<div class="card"><div class="card-t" style="color:var(--maroon)">Job Card · ${j.id}</div>
+        ${fr('Customer',j.customer)}${fr('Phone (WhatsApp)',j.phone)}${fr('Item',j.item)}${fr('Work Type',j.work)}
+        ${fr('Vendor / Worker',j.vendor)}${fr('Sent Out',j.out)}${fr('Expected Return',j.exp,j.overdue?T.vermillion:null)}
+        ${fr('Total Charge',money(j.total))}${fr('Advance Paid',money(j.adv))}${fr('Balance Due (auto)',money(j.total-j.adv),T.zari)}
+        ${fr('Status',SM[j.status].l,SM[j.status].c)}
+        ${j.status!=='closed'?`<button class="btn btn-gold" style="width:100%;justify-content:center;margin-top:14px" onclick="advance('${j.id}')">Advance to "${SM[nx].l}" ${ic('chev')}</button>`:''}</div>`;
+    }
+    body=`<div class="grid" style="grid-template-columns:${S.sel?'1fr 1fr':'1fr'}">${left}${right}</div>`;
+  }
+  let vend='';
+  if(!scope&&role!=='CHECKPOST'){vend=`<div class="card" style="margin-top:16px"><div class="card-t">Vendor Performance</div>`+
+    VEND.map(v=>`<div class="frow"><span style="font-size:13px">${v[0]} <span style="color:var(--muted)">· ${v[1]}</span></span>
+    <span style="color:var(--muted);font-size:13px">${v[2]} jobs · on-time <b style="color:${v[3]>90?T.emerald:T.amber}">${v[3]}%</b></span></div>`).join('')+`</div>`;}
+  return head('New Module · Checkpost','Alteration / Fall / Munda Tracking','Track every garment sent out for work — auto WhatsApp to the customer when it\'s ready',pill('NEW',T.maroon))+seam+body+vend;
+}
+function fr(k,v,c){return `<div class="frow"><span class="fk">${k}</span><span class="fv" style="${c?`color:${c};font-weight:700`:''}">${v}</span></div>`}
+
+function trowsHtml(){return TRIPS.map(r=>`<tr><td>${r.s}</td><td>${r.p}</td><td>${r.d}</td><td>${r.r}</td><td class="num" style="font-weight:700">${r.km} km</td><td class="num">${r.st}</td><td class="num" style="color:${T.zari}">${money(r.rm)}</td><td style="color:${r.f==='—'?'var(--faint)':T.amber}">${r.f}</td></tr>`).join('')}
+function recentTripsCard(){return `<div class="card"><div class="card-t">Recent Trips</div>
+  <table><thead><tr><th>Staff</th><th>Purpose</th><th>Departed</th><th>Returned</th><th class="num">KM</th><th class="num">Stops</th><th class="num">Reimburse</th><th>Flag</th></tr></thead><tbody>${trowsHtml()}</tbody></table></div>`}
+function vField(){ return (S.role==='CEO'||S.role==='HR') ? vFieldMonitor() : vFieldControl(); }
+
+function vFieldControl(){
+  const t=S.trip; const km=(ROUTE_KM*t.p).toFixed(2); const pings=Math.round(t.secs/20)+1;
+  return head('GPS & Field Tracking','Field Staff Trip Tracker','Tap Start Trip — live GPS every 20s · KM by Haversine · auto reimbursement ₹5/km')+
+  `<div class="grid" style="grid-template-columns:1.1fr 1fr;margin-bottom:16px">
+    <div class="card"><div class="card-t">Live Trip · Raju Patil</div>
+      <div class="map-wrap" style="position:relative">
+        ${mapSvg()}
+        <div style="position:absolute;top:12px;left:12px;background:#fff;border-radius:10px;padding:7px 12px;box-shadow:0 4px 16px rgba(27,34,64,.18);display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:#241F19">
+          <span style="width:8px;height:8px;border-radius:50%;background:${T.emerald};box-shadow:0 0 0 4px ${T.emerald}33"></span>Raju Patil · Bank Deposit</div>
+        <div style="position:absolute;bottom:12px;left:12px;background:#fff;border-radius:10px;padding:9px 13px;box-shadow:0 4px 16px rgba(27,34,64,.18);font-size:12px;color:#241F19">
+          <b id="eta-cov">${km}</b> km covered &nbsp;·&nbsp; <b id="eta-rem">${(ROUTE_KM*(1-t.p)).toFixed(1)}</b> km to Bank</div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:14px;align-items:center">${t.running?`<button class="btn" style="background:${T.vermillion};color:#fff" onclick="stopTrip();render()">${ic('square')} End Trip</button>`:`<button class="btn" style="background:${T.emerald};color:#fff" onclick="startTrip()">${ic('play')} Start Trip</button>`}<span style="color:var(--faint);font-size:11px">live GPS · 1 ping / 1.5s (= 20s real)</span></div></div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="row">${stat('Distance',`<span id="tk">${km}</span> km`,T.emerald)}${stat('Elapsed',`<span id="ts">${Math.floor(t.secs/60)}m ${t.secs%60}s</span>`,T.ink)}</div>
+      <div class="row">${stat('GPS Pings',`<span id="tp">${pings}</span>`,T.slate)}${stat('Reimbursement',`<span id="tr">${money(Math.round(km*5))}</span>`,T.zari,'KM × ₹5')}</div>
+    </div></div>`+recentTripsCard();
+}
+
+function vFieldMonitor(){
+  const fleet=S.fleet; const total=fleet.reduce((a,f)=>a+(f.dist||0),0).toFixed(1);
+  const onduty=fleet.map((f,i)=>{const s=fStatus(f);return `<div class="frow"><span style="font-size:13px;display:flex;align-items:center;gap:8px"><span style="width:9px;height:9px;border-radius:50%;background:${f.color}"></span>${f.name} <span style="color:var(--muted)">· ${f.purpose}</span></span>
+     <span id="fst-${i}" style="font-size:12px;font-weight:700;color:${s.c}">${s.t}</span></div>`}).join('');
+  return head('CEO Dashboard · Live','Field Staff — Live Map','Live positions of every staff member on duty — updating in real time, nothing to start')+
+  `<div class="grid" style="grid-template-columns:1.1fr 1fr;margin-bottom:16px">
+    <div class="card"><div class="card-t">Live · ${fleet.length} staff on the road</div>
+      <div class="map-wrap" style="position:relative">
+        ${mapSvgFleet()}
+        <div style="position:absolute;top:12px;left:12px;background:#fff;border-radius:10px;padding:7px 12px;box-shadow:0 4px 16px rgba(27,34,64,.18);display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:#241F19">
+          <span style="width:8px;height:8px;border-radius:50%;background:${T.emerald};box-shadow:0 0 0 4px ${T.emerald}33"></span>${fleet.length} field staff live</div>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:14px;align-items:center"><span class="live"><i></i>Live</span><span style="color:var(--muted);font-size:12px">Auto-updating · every staff member tracked in real time</span></div></div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="row">${stat('Staff On Duty',String(fleet.length),T.emerald)}${stat('Combined Distance',`<span id="fleet-total">${total}</span> km`,T.zari,'live · today')}</div>
+      <div class="card"><div class="card-t">On Duty Now</div>${onduty}
+        <div class="frow"><span style="font-size:13px;display:flex;align-items:center;gap:8px"><span style="width:9px;height:9px;border-radius:50%;background:var(--faint)"></span>Suresh More <span style="color:var(--muted)">· at store</span></span><span style="color:var(--muted);font-size:12px">Idle</span></div></div>
+    </div></div>`+recentTripsCard();
+}
+function fStatus(f){
+  if(f.phase==='hold' && f.p>=0.999) return {t:`Arrived at ${f.dest} ✓`, c:f.color};
+  if(f.phase==='hold' && f.p<=0.001) return {t:'Back at store', c:'#6E665B'};
+  if(f.dir<0) return {t:`Returning · ${(f.km*f.p).toFixed(1)} km to store`, c:f.color};
+  return {t:`${(f.km*f.p).toFixed(2)} km · ${(f.km*(1-f.p)).toFixed(1)} to ${f.dest}`, c:f.color};
+}
+function startMonitorLoop(){
+  if(S._timer) return;
+  S._timer=setInterval(()=>{
+    S.fleet.forEach(f=>{
+      if(f.phase==='hold'){ f.holdT--; if(f.holdT<=0){f.phase='go';f.dir=-f.dir;} }
+      else { f.p+=f.dir*0.035; f.dist=(f.dist||0)+f.km*0.035;
+        if(f.p>=1){f.p=1;f.phase='hold';f.holdT=3;}
+        else if(f.p<=0){f.p=0;f.phase='hold';f.holdT=3;} }
+    });
+    updateFleet();
+  },1500);
+}
+function updateFleet(){
+  S.fleet.forEach((f,i)=>{
+    const r=document.getElementById('rider-'+i); if(r){const [x,y]=ptAlong(f.route,f.p);r.setAttribute('transform',`translate(${x},${y})`)}
+    const d=document.getElementById('route-done-'+i); if(d)d.setAttribute('points',travel(f.route,f.p).map(q=>q.join(',')).join(' '));
+    const st=document.getElementById('fst-'+i); if(st){const s=fStatus(f);st.textContent=s.t;st.style.color=s.c;}
+  });
+  const ts=document.getElementById('fleet-total'); if(ts)ts.textContent=S.fleet.reduce((a,f)=>a+(f.dist||0),0).toFixed(1);
+}
+const ROUTE=[[110,372],[110,250],[300,250],[520,250],[520,150],[578,150]];
+const ROUTE_KM=4.6;
+function routeLen(r){let t=0;for(let i=1;i<r.length;i++)t+=Math.hypot(r[i][0]-r[i-1][0],r[i][1]-r[i-1][1]);return t}
+function ptAlong(r,p){const L=routeLen(r);let d=p*L;for(let i=1;i<r.length;i++){const a=r[i-1],b=r[i],s=Math.hypot(b[0]-a[0],b[1]-a[1]);if(d<=s){const k=s?d/s:0;return[a[0]+(b[0]-a[0])*k,a[1]+(b[1]-a[1])*k]}d-=s}return r[r.length-1]}
+function travel(r,p){const L=routeLen(r);let d=p*L,pts=[r[0]];for(let i=1;i<r.length;i++){const a=r[i-1],b=r[i],s=Math.hypot(b[0]-a[0],b[1]-a[1]);if(d>=s){pts.push(b);d-=s}else{const k=s?d/s:0;pts.push([a[0]+(b[0]-a[0])*k,a[1]+(b[1]-a[1])*k]);break}}return pts}
+const ROUTE2=[[110,372],[110,250],[300,250],[300,130],[180,130]];
+const FLEET_DEF=[
+  {name:'Raju Patil',purpose:'Bank Deposit',color:'#BC5F39',route:ROUTE,dest:'Bank',destXY:[578,150],km:4.6,p:0.30},
+  {name:'Vijay Kale',purpose:'Vendor Pickup',color:'#3E4A66',route:ROUTE2,dest:'Vendor',destXY:[180,130],km:6.2,p:0.58},
+];
+function baseMap(){
+  const rd=(d,w,c)=>`<path d="${d}" stroke="${c}" stroke-width="${w}" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+  const major=(d,w)=>rd(d,w+4,'#DBD3C4')+rd(d,w,'#FCFAF3');
+  const minor=d=>rd(d,5,'#FBF8F1');
+  const bld=[[150,272,38,28],[196,292,28,36],[358,92,46,32],[432,300,38,28],[600,300,42,28],[150,158,38,26],[232,150,32,24],[462,182,38,28],[40,150,38,28],[612,200,38,26],[230,300,32,26]]
+    .map(([x,y,w,h])=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2" fill="#DED7C8"/>`).join('');
+  return `<rect width="720" height="430" fill="#E7E1D4"/>
+    <rect x="540" y="32" width="172" height="92" rx="11" fill="#C8CBA6"/>
+    <polygon points="0,430 0,348 72,374 132,418 96,430" fill="#AFC6CF"/>
+    ${bld}
+    ${minor('M0,130 H720')}${minor('M0,350 H300')}${minor('M180,0 V430')}${minor('M420,250 V430')}${minor('M620,0 V250')}${minor('M110,250 V410')}${minor('M480,150 H630')}${minor('M300,130 H520')}
+    ${major('M0,250 H720',16)}${major('M300,0 V430',15)}${major('M520,70 V430',11)}${major('M40,50 L300,250',9)}
+    <text x="362" y="244" fill="#9A958A" font-size="11" font-family="sans-serif" font-style="italic">Bhandarkar Road</text>
+    <text x="306" y="96" fill="#9A958A" font-size="11" font-family="sans-serif" font-style="italic">FC Road</text>
+    <text x="556" y="84" fill="#7E8556" font-size="11" font-family="sans-serif" font-style="italic">Sambhaji Park</text>
+    <text x="20" y="408" fill="#7B9AA6" font-size="10" font-family="sans-serif" font-style="italic">Mutha River</text>
+    <g transform="translate(110,372)"><circle r="8" fill="#5C7A4E"/><circle r="3.4" fill="#fff"/></g>
+    <text x="120" y="395" fill="#6E665B" font-size="10.5" font-family="sans-serif" font-weight="700">Store</text>
+    <g transform="translate(690,400)"><circle r="13" fill="#fff" opacity="0.9"/><path d="M0,-7 L3,2 L0,0 L-3,2 Z" fill="#8E4230"/><text x="0" y="12" text-anchor="middle" fill="#6E665B" font-size="8" font-family="sans-serif">N</text></g>`;
+}
+function riderLayer(sfx,route,p,color,destXY,destLabel){
+  const travelPts=travel(route,p).map(q=>q.join(',')).join(' ');
+  const [rx,ry]=ptAlong(route,p); const [dx,dy]=destXY;
+  return `<polyline points="${route.map(q=>q.join(',')).join(' ')}" fill="none" stroke="#CFC8BA" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <polyline id="route-done${sfx}" points="${travelPts}" fill="none" stroke="${color}" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <g transform="translate(${dx},${dy})"><path d="M0,-15 C7.5,-15 11.5,-8.5 11.5,-3.5 C11.5,4 0,13 0,13 C0,13 -11.5,4 -11.5,-3.5 C-11.5,-8.5 -7.5,-15 0,-15 Z" fill="${color}"/><circle cy="-3.5" r="3.7" fill="#fff"/></g>
+    <text x="${dx-12}" y="${dy+22}" fill="#6E665B" font-size="9.5" font-family="sans-serif" font-weight="700">${destLabel}</text>
+    <g id="rider${sfx}" transform="translate(${rx},${ry})" style="transition:transform 1.4s linear">
+      <circle r="9" fill="none" stroke="${color}" stroke-width="2"><animate attributeName="r" values="9;19;9" dur="1.8s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0;0.5" dur="1.8s" repeatCount="indefinite"/></circle>
+      <circle r="8.5" fill="${color}" stroke="#fff" stroke-width="2.5"/>
+      <path d="M-3,1.4 L0,-3.8 L3,1.4 L0,-0.5 Z" fill="#fff"/>
+    </g>`;
+}
+function mapSvg(){
+  return `<svg width="100%" viewBox="0 0 720 430" style="display:block">${baseMap()}${riderLayer('',ROUTE,S.trip.p,'#BC5F39',[578,150],'Bank')}</svg>`;
+}
+function mapSvgFleet(){
+  const layers=S.fleet.map((f,i)=>riderLayer('-'+i,f.route,f.p,f.color,f.destXY,f.dest)).join('');
+  return `<svg width="100%" viewBox="0 0 720 430" style="display:block">${baseMap()}${layers}</svg>`;
+}
+
+
+function vStore(){
+  return head('Store Operations','My Branch — B1 Heritage Flagship','Mark open/close with GPS verification (within 150 m of the store)')+
+  `<div class="grid" style="grid-template-columns:1fr 1fr">
+    <div class="card"><div class="card-t">Store Status</div>
+      ${!S.storeOpen?`<button class="btn btn-gold" style="width:100%;justify-content:center" onclick="S.storeOpen=true;render()">${ic('pin')} Mark Store Open</button>`:
+      `<div style="display:flex;gap:8px;align-items:center;color:${T.emerald};font-weight:700;margin-bottom:8px">${ic('check',T.emerald)} Open · GPS Verified (42 m from store)</div>
+       <div style="color:var(--muted);font-size:12px">Opened 9:28 AM · timestamp automatic · visible to CEO &amp; HR</div>
+       <button class="btn btn-ghost btn-sm" style="border:1px solid var(--hairline);color:var(--muted);margin-top:14px" onclick="S.storeOpen=false;render()">Mark Store Close</button>`}</div>
+    <div class="card"><div class="card-t">Today's Snapshot</div>
+      ${fr('Opening','9:28 AM · on time',T.emerald)}${fr('Cash to submit','Pending (evening)')}${fr('Alteration jobs','5 active · 1 overdue',T.vermillion)}${fr('Field trips','2 today')}</div></div>`;
+}
+
+function vInventory(){
+  return head('Inventory','Stock Reconciliation — 18 Categories','Expected vs counted · discrepancies flagged automatically')+
+  `<div class="card"><div class="grid" style="grid-template-columns:repeat(3,1fr)">`+
+    INV.map(([c,e,n])=>{const d=n-e;return `<div class="invcell" style="${d?`border-color:${T.vermillion}55`:''}">
+      <div style="font-size:13px;font-weight:600">${c}</div><div style="color:var(--muted);font-size:11px;margin-top:4px">Exp ${e} · Cnt ${n}</div>
+      <div style="font-size:12px;font-weight:700;margin-top:3px;color:${d?T.vermillion:T.emerald}">${d===0?'Matched':d+' discrepancy'}</div></div>`}).join('')+
+  `</div></div>`;
+}
+function vOutstanding(){
+  const col={'0–30':T.emerald,'30–60':T.amber,'60+':T.vermillion};
+  return head('B2B Outstanding','Ageing Report — from Tally Cloud','30 / 60 day alerts · 60+ days flags the CEO automatically')+
+  `<div class="row" style="margin-bottom:14px">${stat('0–30 days',money(46000),T.emerald)}${stat('30–60 days',money(84000),T.amber)}${stat('60+ days',money(342000),T.vermillion,'2 parties overdue')}</div>
+  <div class="card"><table><thead><tr><th>Party</th><th>Invoice</th><th class="num">Amount</th><th class="num">Age</th><th>Bucket</th></tr></thead><tbody>`+
+  B2B.map(b=>`<tr><td>${b.p}</td><td>${b.i}</td><td class="num" style="font-weight:700">${money(b.a)}</td><td class="num">${b.g}d</td><td>${pill(b.b,col[b.b])}</td></tr>`).join('')+`</tbody></table></div>`;
+}
+function vUsers(){
+  const col={active:T.emerald,locked:T.amber,disabled:T.vermillion};
+  return head('Security','User Management','Force password change · lockout after 5 tries · instant disable · CEO-only reset')+
+  `<div class="card"><table><thead><tr><th>Name</th><th>Role</th><th>Branch</th><th>Status</th><th>Actions</th></tr></thead><tbody>`+
+  S.users.map((u,i)=>`<tr><td>${u[0]}</td><td>${u[1]}</td><td>${u[2]}</td><td>${pill(u[3].toUpperCase(),col[u[3]])}</td>
+    <td><div style="display:flex;gap:6px"><button class="btn btn-ghost btn-sm" style="border:1px solid var(--zari);color:var(--zari)" onclick="alert('Password reset link queued')">${ic('refresh')} Reset</button>
+    ${u[1]!=='CEO'?`<button class="btn btn-ghost btn-sm" style="border:1px solid ${u[3]==='disabled'?T.emerald:T.vermillion};color:${u[3]==='disabled'?T.emerald:T.vermillion}" onclick="toggleUser(${i})">${ic('power')} ${u[3]==='disabled'?'Enable':'Disable'}</button>`:''}</div></td></tr>`).join('')+
+  `</tbody></table><div style="color:var(--muted);font-size:11px;margin-top:11px">The CEO account cannot be disabled by anyone in the system.</div></div>`;
+}
+function vCompany(){
+  return head('Company Structure','Group — 4 Branches',`${BRAND} Heritage · established 1982`)+
+  `<div class="grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:16px">`+
+    BRANCHES.map(b=>`<div class="bcard"><div class="bcode">${b.id}</div><div style="font-size:14px;font-weight:600;margin-top:4px">${b.name}</div>
+    <div style="color:var(--muted);font-size:11px;margin-top:2px">${b.area}</div><div style="margin-top:9px">${pill(b.type,T.slate)}</div></div>`).join('')+`</div>
+  <div class="card"><div class="card-t">Integrations (Planned)</div>`+
+    INTEG.map(it=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--hairline)">
+      <div style="display:flex;gap:11px;align-items:center"><div style="width:34px;height:34px;border-radius:9px;background:var(--paper2);border:1px solid var(--hairline);display:flex;align-items:center;justify-content:center">${ic(it[3],T.zari)}</div>
+      <div><div style="font-size:13px">${it[0]}</div><div style="color:var(--muted);font-size:11px">${it[1]}</div></div></div>
+      <div style="display:flex;gap:9px;align-items:center"><span style="color:var(--muted);font-size:11px">${it[2]}</span>${pill('Planned',T.amber)}</div></div>`).join('')+
+    `<div style="display:flex;gap:18px;margin-top:14px;flex-wrap:wrap;color:var(--muted);font-size:12px">
+      <span style="display:flex;gap:6px;align-items:center">${ic('cloud',T.emerald)} Firestore · Mumbai</span>
+      <span style="display:flex;gap:6px;align-items:center">${ic('phone2',T.slate)} PWA · Android · iOS · Desktop</span>
+      <span style="display:flex;gap:6px;align-items:center">${ic('shield',T.zari)} HTTPS · role isolation</span></div></div>`;
+}
+function simpleList(eye,title,sub,cols,rows){
+  return head(eye,title,sub)+`<div class="card"><table><thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>`+
+    rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')+`</tbody></table></div>`;
+}
+
+/* ============================== INTERACTIONS ============================== */
+function selJob(id){S.sel=JOBS.find(j=>j.id===id);render()}
+function advance(id){
+  const j=JOBS.find(x=>x.id===id);const idx=FLOW.indexOf(j.status);if(idx>=FLOW.length-1)return;
+  const nx=FLOW[idx+1];j.status=nx;if(nx==='returned')j.overdue=false;
+  if(S.sel&&S.sel.id===id)S.sel=j;
+  if(nx==='notified'){S.wa={name:j.customer.replace(/^(Mrs\.|Mr\.|Ms\.)\s/,''),item:j.item,branch:BRANCHES.find(b=>b.id===j.branch).name,bal:j.total-j.adv}}
+  render();
+}
+function toggleUser(i){S.users[i][3]=S.users[i][3]==='disabled'?'active':'disabled';render()}
+function startTrip(){S.trip={running:true,p:0,secs:0};render();
+  S._timer=setInterval(()=>{S.trip.p=Math.min(1,S.trip.p+0.05);S.trip.secs+=20;updateTrip();
+    if(S.trip.p>=1){clearInterval(S._timer);S._timer=null;S.trip.running=false;setTimeout(render,500)}},1500);}
+function stopTrip(){if(S._timer){clearInterval(S._timer);S._timer=null}S.trip.running=false;S._fleetInit=false}
+function updateTrip(){
+  const t=S.trip;const km=(ROUTE_KM*t.p).toFixed(2);const pings=Math.round(t.secs/20)+1;
+  const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
+  set('tk',km);set('ts',`${Math.floor(t.secs/60)}m ${t.secs%60}s`);set('tp',pings);set('tr',money(Math.round(km*5)));
+  set('eta-cov',km);set('eta-rem',(ROUTE_KM*(1-t.p)).toFixed(1));
+  const rider=document.getElementById('rider');if(rider){const [x,y]=ptAlong(ROUTE,t.p);rider.setAttribute('transform',`translate(${x},${y})`)}
+  const done=document.getElementById('route-done');if(done)done.setAttribute('points',travel(ROUTE,t.p).map(q=>q.join(',')).join(' '));
+}
+function closeWa(){S.wa=null;render()}
+
+/* ============================== RENDER ============================== */
+function render(){
+  const app=document.getElementById('app');
+  if(S.stage==='login'){app.innerHTML=loginView();return}
+  if(S.tab==='field' && (S.role==='CEO'||S.role==='HR') && !S._fleetInit){S.fleet=FLEET_DEF.map(f=>({...f,dir:1,phase:'go',holdT:0,dist:f.km*f.p}));S._fleetInit=true}
+  const scope=scopeOf();
+  const V={overview:vOverview,alerts:vAlerts,cash:vCash,bank:vBank,alteration:vAlteration,field:vField,store:vStore,inventory:vInventory,outstanding:vOutstanding,users:vUsers,company:vCompany,
+    daily:()=>simpleList('Daily Report','Full Store Report — per Branch','Compiled automatically from open/close, cash, bank, alterations and trips',
+      ['Branch','Open','Sales','Cash','Deposited','Status'],CASH.map(c=>[c.b,'On time',money(c.sales),money(c.sub),money(c.dep),c.sub===c.sales?'Clean':'Variance'])),
+    timings:()=>simpleList('Timings','Open / Close vs Schedule','Delay against schedule · GPS-verified opening times',
+      ['Branch','Scheduled','Actual Open','GPS','Delay'],[['B1','9:30','9:28','42 m','On time'],['B2','9:30','9:35','0.8 km ⚠','+5m'],['B3','9:00','9:02','30 m','On time'],['B4','9:30','9:48','60 m','+18m late']]),
+    attendance:()=>simpleList('HR','Attendance · Spine NG (planned)','Will auto-fill from Spine NG HRMS daily 7 AM',
+      ['Staff','Branch','In','Out','Status'],[['Suresh More','B1','9:25','—','Present'],['Kavita Pawar','B1','9:40','—','Present'],['Raju Patil','B1','9:20','—','On field'],['Deepak Shah','B4','—','—','Absent']]),
+    reimb:()=>simpleList('Accounts','KM Reimbursements','Auto-calculated from field trips · ₹5 per km',
+      ['Staff','Trips','Total KM','Reimbursement'],[['Raju Patil','2','10.7 km',money(54)],['Vijay Kale','1','9.2 km',money(46)]]),
+    perf:()=>simpleList('Performance','Branch Score 0–100%','Composite of timings, cash accuracy, alteration TAT and alerts',
+      ['Branch','Timings','Cash Accuracy','Alteration TAT','Score'],[['B1','Good','98%','1.8 days','92%'],['B2','Good','100%','2.1 days','88%'],['B3','OK','100%','—','79%'],['B4','Late','65%','2.0 days','71%']]),
+  };
+  const view=(V[S.tab]||vOverview)();
+  const R=ROLES[S.role];
+  const nav=NAV[S.role].map(([k,l,i])=>`<div class="nav-item ${S.tab===k?'on':''}" onclick="go('${k}')">${ic(i)} ${l}</div>`).join('');
+  const opts=Object.keys(ROLES).map(r=>`<option value="${r}" ${r===S.role?'selected':''}>${ROLES[r].label}</option>`).join('');
+  app.innerHTML=`<div class="shell${S.navOpen?' nav-open':''}">
+    <div class="scrim" onclick="toggleNav(false)"></div>
+    <div class="side">
+      <div class="side-top"><div class="mono"><span>A</span></div><div><div class="side-name">Agarwal ERP</div><div class="side-tag">v5.0 · Mumbai</div></div></div>
+      <div class="nav"><div class="nav-sec">${R.label} workspace</div>${nav}</div>
+      <div class="side-foot"><button class="signout" onclick="stopTrip();S.stage='login';render()">${ic('logout')} Sign out</button></div>
+    </div>
+    <div class="main">
+      <div class="topbar">
+        <button class="hamburger" aria-label="Menu" onclick="toggleNav(true)">${ic('menu')}</button>
+        <div class="tb-role"><div class="tb-badge" style="background:${R.color}1c">${ic(R.icon,R.color)}</div>
+          <div><div class="tb-rname">${R.label}</div><div class="tb-rwho">${R.who}</div></div></div>
+        <div class="switcher"><span class="live"><i></i>Live</span><span class="switch-lbl">Demo · view as</span>
+          <select class="role" onchange="setRole(this.value)">${opts}</select></div>
+      </div>
+      <div class="content"><div class="view">${view}</div></div>
+    </div></div>`+
+    (S.wa?`<div class="toast" onclick="closeWa()"><div class="wa" onclick="event.stopPropagation()">
+      <div class="wa-top">${ic('phone',T.emerald)} WhatsApp · sent to customer</div>
+      <div class="wa-body"><div class="wa-bubble">Dear ${S.wa.name},<br>Your <b>${S.wa.item}</b> is ready for pickup at ${S.wa.branch}, ${BRAND}.<br>Balance due: <b>${money(S.wa.bal)}</b><br>Thank you — ${BRAND} 🌟</div>
+      <div class="wa-meta">Fired automatically the moment the item was marked IN</div>
+      <button class="btn btn-ghost btn-sm" style="border:1px solid ${T.emerald};color:#7FE0A8;width:100%;justify-content:center;margin-top:12px" onclick="closeWa()">Close</button></div></div></div>`:'');
+  if(S.tab==='field' && (S.role==='CEO'||S.role==='HR') && !S._timer){startMonitorLoop()}
+}
+function loginView(){
+  return `<div class="hero">
+    <div class="grain"></div>
+    <nav>
+      <div class="brand">Agarwal Textiles<small>Heritage · Est. 1982</small></div>
+      <div class="navlinks"><span class="on">Dashboard</span><span>Modules</span><span>Security</span><span onclick="S.stage='app';S.role='CEO';S.tab='overview';render()">Sign In</span></div>
+    </nav>
+    <div class="center">
+      <div class="eyebrow2"><i></i>Enterprise Resource Planning · v5.0</div>
+      <h1>One System.<br>Every Branch.</h1>
+      <div class="subtitle">Cash, stock, staff, GPS and alterations — across all four stores, in real time.</div>
+      <button class="cta" onclick="S.stage='app';S.role='CEO';S.tab='overview';render()">Sign in to dashboard →</button>
+    </div>
+    <div class="foot"><span><b>PWA</b> · Android · iOS · Desktop</span><span>Firebase · <b>Mumbai</b></span></div>
+  </div>`;
+}
+// deep-link for demo: ?role=CEO&tab=overview enters the app directly
+(function(){const q=new URLSearchParams(location.search);const r=q.get('role');
+  if(r&&ROLES[r.toUpperCase()]){S.stage='app';S.role=r.toUpperCase();S.tab=q.get('tab')||NAV[S.role][0][0];
+    if(q.get('nav')==='1')S.navOpen=true;}})();
+render();
+
+/* ============================== PWA: service worker + install ============================== */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+
+// Custom "Install app" button — Android/desktop Chrome fires beforeinstallprompt
+let deferredPrompt = null;
+function showInstallFab(){
+  if (document.getElementById('installFab')) return;
+  const b = document.createElement('button');
+  b.id = 'installFab'; b.className = 'install-fab';
+  b.innerHTML = ic('download') + ' Install app';
+  b.onclick = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null; b.remove();
+    }
+  };
+  document.body.appendChild(b);
+}
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault(); deferredPrompt = e; showInstallFab();
+});
+window.addEventListener('appinstalled', () => {
+  const f = document.getElementById('installFab'); if (f) f.remove();
+});
+</script>
+</body>
+</html>

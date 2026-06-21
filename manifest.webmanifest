@@ -1,0 +1,19 @@
+{
+  "name": "Agarwal Textiles ERP",
+  "short_name": "AT ERP",
+  "description": "Enterprise Resource Planning for Agarwal Textiles Group — cash, stock, staff, GPS and alterations across all branches.",
+  "id": "/",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#2C2924",
+  "theme_color": "#BC5F39",
+  "categories": ["business", "productivity"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
